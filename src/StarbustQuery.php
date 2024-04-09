@@ -19,7 +19,7 @@ class StarbustQuery
         if (empty(self::$instance)) {
             $instance = new self();
             $instance->setConnection(
-                !empty($connection) ? config('starbust.default') : $connection
+                empty($connection) ? config('starbust.default') : $connection
 
             );
             self::$instance = $instance;
