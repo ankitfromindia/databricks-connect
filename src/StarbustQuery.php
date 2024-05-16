@@ -86,7 +86,7 @@ class StarbustQuery
     public function fetchAndInsertInto($table, $map = null, $chunk = 2000) {
         $data = [];
         $this->select = odbc_exec($this->connection, $this->query);
-
+        \Log::info('starbustquery:: data fetched');
         $counter = 0;
         while ($row = odbc_fetch_array($this->select)) {
 
@@ -96,7 +96,7 @@ class StarbustQuery
             {
                 foreach(array_chunk($data, 2000) as $d)
                 {
-                    DB::table($table)->insert($d);
+                    $this->insertOrUpdate($d,$table);
                 }
                 $data = [];
                 $counter=0;
@@ -161,5 +161,32 @@ class StarbustQuery
     private function removeLimitOffset()
     {
         return preg_replace('/\s+OFFSET\s+\d+\s*(?:LIMIT\s+\d+\s*)?$/i', '', $this->query); // Remove existing LIMIT and OFFSET
+    }
+
+
+    public function insertOrUpdate($data, $tableName)
+    {
+        if (empty($data)) {
+            return false;
+        }
+
+        $columns = implode(", ", array_keys($data[0]));
+        $updateColumns = array_map(function ($column) {
+            return "{$column} = VALUES({$column})";
+        }, array_keys($data[0]));
+        $updateColumns = implode(", ", $updateColumns);
+
+        $values = [];
+        foreach ($data as $row) {
+            $values[] = "('" . implode("', '", array_map(function ($r) {
+                return addslashes($r);
+            }, array_values($row))) . "')";
+        }
+        $values = implode(", ", $values);
+
+        $query = "INSERT INTO {$tableName} ({$columns}) VALUES {$values} ON DUPLICATE KEY UPDATE {$updateColumns}";
+
+        // Execute the query here (e.g., using PDO)
+        return DB::statement($query);
     }
 }
