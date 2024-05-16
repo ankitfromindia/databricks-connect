@@ -2,6 +2,7 @@
 
 namespace Ankitfromindia\StarbustQuery;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StarbustQuery
 {
@@ -85,6 +86,7 @@ class StarbustQuery
     public function fetchAndInsertInto($table, $map = null, $chunk = 2000) {
         $data = [];
         $this->select = odbc_exec($this->connection, $this->query);
+
         $counter = 0;
         while ($row = odbc_fetch_array($this->select)) {
 
@@ -92,7 +94,10 @@ class StarbustQuery
             $counter++;
             if($counter >=$chunk)
             {
-                DB::table($table)->insert($data);
+                foreach(array_chunk($data, 2000) as $d)
+                {
+                    DB::table($table)->insert($d);
+                }
                 $data = [];
                 $counter=0;
             }
