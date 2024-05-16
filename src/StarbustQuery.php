@@ -1,6 +1,7 @@
 <?php
 
 namespace Ankitfromindia\StarbustQuery;
+use Illuminate\Support\Facades\DB;
 
 class StarbustQuery
 {
@@ -79,6 +80,23 @@ class StarbustQuery
             array_push($data, $this->row($row, $map));
         }
         return $data;
+    }
+
+    public function fetchAndInsertInto($table, $map = null, $chunk = 2000) {
+        $data = [];
+        $this->select = odbc_exec($this->connection, $this->query);
+        $counter = 0;
+        while ($row = odbc_fetch_array($this->select)) {
+
+            array_push($data, $this->row($row, $map));
+            $counter++;
+            if($counter >=$chunk)
+            {
+                DB::table($table)->insert($data);
+                $data = [];
+                $counter=0;
+            }
+        }
     }
 
     public function limit($limit)
