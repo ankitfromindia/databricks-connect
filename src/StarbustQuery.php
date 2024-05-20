@@ -102,6 +102,11 @@ class StarbustQuery
                 $counter=0;
             }
         }
+
+        // Insert any remaining data that did not fill a complete chunk
+        if (!empty($data)) {
+            $this->insertOrUpdate($data, $table);
+        }
     }
 
     public function limit($limit)
