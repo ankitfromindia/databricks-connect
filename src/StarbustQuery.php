@@ -1,6 +1,7 @@
 <?php
 
 namespace Ankitfromindia\StarbustQuery;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -11,10 +12,9 @@ class StarbustQuery
     private static $instance;
     private $query;
     private $limit = 10;
+    private $offset = 0;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public static function connect($connection = null)
     {
@@ -83,27 +83,32 @@ class StarbustQuery
         return $data;
     }
 
-    public function fetchAndInsertInto($table, $map = null, $chunk = 2000) {
-        $data = [];
+    public function fetchCursor($map = null)
+    {
         $this->select = odbc_exec($this->connection, $this->query);
-        \Log::info('starbustquery:: data fetched');
-        $counter = 0;
-        while ($row = odbc_fetch_array($this->select)) {
 
-            array_push($data, $this->row($row, $map));
+        while ($row = odbc_fetch_array($this->select)) {
+            yield $this->row($row, $map);
+        }
+    }
+
+
+    public function fetchAndInsertInto($table, $map = null, $chunk = 2000)
+    {
+        $data = [];
+        $counter = 0;
+
+        foreach ($this->fetchCursor($map) as $row) {
+            $data[] = $row;
             $counter++;
-            if($counter >=$chunk)
-            {
-                foreach(array_chunk($data, 2000) as $d)
-                {
-                    $this->insertOrUpdate($d,$table);
-                }
+
+            if ($counter >= $chunk) {
+                $this->insertOrUpdate($data, $table);
                 $data = [];
-                $counter=0;
+                $counter = 0;
             }
         }
 
-        // Insert any remaining data that did not fill a complete chunk
         if (!empty($data)) {
             $this->insertOrUpdate($data, $table);
         }
