@@ -42,7 +42,7 @@ class Databricks
                 . "ThriftTransport=2;"
                 . "SparkServerType=3;"
                 . "CHARSET=" . config('databricks.connections.' . $connection . '.charset') . ";";
-            return odbc_connect($connStr, config('databricks.connections.' . $connection . '.aws_key'), config('databricks.connections.' . $connection . '.aws_secret'));
+            $this->connection = odbc_connect($connStr, config('databricks.connections.' . $connection . '.aws_key'), config('databricks.connections.' . $connection . '.aws_secret'));
         } catch (\Exception $e) {
             echo "Connection Error: " . $e->getMessage();
         }
