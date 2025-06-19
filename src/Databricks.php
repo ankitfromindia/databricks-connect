@@ -12,6 +12,7 @@ class Databricks
     private static $instance;
     private $query;
     private $limit = 10;
+    private $offset = 0;
 
     private function __construct() {}
 

@@ -1,11 +1,11 @@
 {
-    "name": "ankitfromindia/starbust-query",
+    "name": "ankitfromindia/databricks",
     "description": "Create ODBC Connection to Starbust and run query",
     "keywords": [
         "ankitfromindia",
-        "starbust-query"
+        "databricks"
     ],
-    "homepage": "https://github.com/ankitfromindia/starbust-query",
+    "homepage": "https://github.com/ankitfromindia/databricks",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -24,18 +24,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Ankitfromindia\\StarbustQuery\\": "src"
+            "Ankitfromindia\\Databricks\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Ankitfromindia\\StarbustQuery\\Tests\\": "tests"
+            "Ankitfromindia\\Databricks\\Tests\\": "tests"
         }
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
-
     },
     "config": {
         "sort-packages": true
@@ -43,10 +42,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Ankitfromindia\\StarbustQuery\\StarbustQueryServiceProvider"
+                "Ankitfromindia\\Databricks\\DatabricksServiceProvider"
             ],
             "aliases": {
-                "StarbustQuery": "Ankitfromindia\\StarbustQuery\\StarbustQueryFacade"
+                "Databricks": "Ankitfromindia\\Databricks\\DatabricksFacade"
             }
         }
     }
