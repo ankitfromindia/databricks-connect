@@ -4,16 +4,16 @@
  * You can place your custom package configuration in here.
  */
 return [
-    'default' => env('SBQ_DEFAULT_CONNECITON', 'starbust'),
+    'default' => env('DBX_DEFAULT_CONNECITON', 'databricks'),
     'connections' => [
-        'starbust' => [
-            'host' => env('SBQ_HOST'),
-            'port' => env('SBQ_PORT'),
-            'user' => env('SBQ_USER'),
-            'password' => env('SBQ_PASSWORD'),
-            'catalog' => env('SBQ_CATALOG'),
-            'schema' => env('SBQ_SCHEMA'),
-            'driver' => env('SBQ_DRIVER', 'Starburst ODBC Driver'),
+        'databricks' => [
+            'driver' => 'Databricks ODBC Driver',
+            'host' => env('DATABRICKS_HOST'),
+            'path' => env('DATABRICKS_PATH'),
+            'token' => env('DATABRICKS_TOKEN'),
+            'aws_key' => env('AWS_ACCESS_KEY_ID'),
+            'aws_secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'charset' => env('DATABRICKS_CHARSET', 'UTF-8'),
         ]
     ]
 ];

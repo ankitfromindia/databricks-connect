@@ -1,52 +1,142 @@
-# Very short description of the package
+# Databricks Connect for Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/ankitfromindia/starbust-query.svg?style=flat-square)](https://packagist.org/packages/ankitfromindia/starbust-query)
-[![Total Downloads](https://img.shields.io/packagist/dt/ankitfromindia/starbust-query.svg?style=flat-square)](https://packagist.org/packages/ankitfromindia/starbust-query)
-![GitHub Actions](https://github.com/ankitfromindia/starbust-query/actions/workflows/main.yml/badge.svg)
+A lightweight Laravel package that allows you to connect to Databricks using ODBC and perform query operations such as `fetch`, `fetchOne`, `paginate`, and even bulk `insertOrUpdate` into your database.
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+---
 
-## Installation
+## 📦 Installation
 
-You can install the package via composer:
+Install via Composer:
 
 ```bash
-composer require ankitfromindia/starbust-query
-```
+composer require ankitfromindia/databricks-connect
 
-## Usage
 
-```php
-// Usage description here
-```
+⸻
 
-### Testing
+⚙️ Configuration
 
-```bash
-composer test
-```
+Publish the configuration file (optional if you want to customize):
 
-### Changelog
+php artisan vendor:publish --tag=databricks-config
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+Set up your .env and config/databricks.php like so:
 
-## Contributing
+return [
+    'default' => 'your_connection_name',
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+    'connections' => [
+        'your_connection_name' => [
+            'driver' => 'Databricks ODBC Driver',
+            'host' => 'dbc-xxxxxxxx-xxxx.cloud.databricks.com',
+            'path' => '/sql/1.0/warehouses/your-warehouse-id',
+            'token' => env('DATABRICKS_TOKEN'),
+            'charset' => 'UTF-8',
+            'aws_key' => '',
+            'aws_secret' => '',
+        ],
+    ],
+];
 
-### Security
 
-If you discover any security related issues, please email er.ankitvishwakarma@gmail.com instead of using the issue tracker.
+⸻
 
-## Credits
+🚀 Usage
 
--   [Ankit Vishwakarma](https://github.com/ankitfromindia)
--   [All Contributors](../../contributors)
+1. Connect to Databricks
 
-## License
+use Ankitfromindia\DatabricksConnect\Databricks;
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+$dbx = Databricks::connect(); // Uses default connection
 
-## Laravel Package Boilerplate
+Or use a specific connection:
 
-This package was generated using the [Laravel Package Boilerplate](https://laravelpackageboilerplate.com).
+$dbx = Databricks::connect('your_connection_name');
+
+
+⸻
+
+2. Fetch All Rows
+
+$data = $dbx->select("SELECT * FROM users")->fetch();
+
+3. Fetch One Row
+
+$user = $dbx->select("SELECT * FROM users WHERE id = 1")->fetchOne();
+
+4. Stream Data with Cursor
+
+foreach ($dbx->select("SELECT * FROM large_table")->fetchCursor() as $row) {
+    // Process row
+}
+
+
+⸻
+
+5. Pagination
+
+$result = $dbx->select("SELECT * FROM users")->paginate(50, 100);
+// returns ['limit' => 50, 'offset' => 100, 'data' => [...]]
+
+
+⸻
+
+6. Count Rows
+
+$count = $dbx->select("SELECT * FROM users")->count();
+
+
+⸻
+
+7. Insert or Update
+
+$data = [
+    ['id' => 1, 'name' => 'Ankit'],
+    ['id' => 2, 'name' => 'Vishwakarma']
+];
+
+$dbx->insertOrUpdate($data, 'users');
+
+
+⸻
+
+8. Fetch and Insert Large Datasets
+
+$dbx->select("SELECT * FROM external_source")
+    ->fetchAndInsertInto('local_table', null, 2000);
+
+
+⸻
+
+🧪 Advanced Options
+
+Apply Limit/Offset Directly
+
+$dbx->select("SELECT * FROM users")
+    ->limit(100)
+    ->offset(200)
+    ->fetch();
+
+
+⸻
+
+🛠 Requirements
+	•	PHP 8.0+
+	•	Laravel 9+
+	•	ODBC installed with Databricks ODBC Driver
+
+⸻
+
+📝 License
+
+MIT
+
+⸻
+
+👤 Author
+
+Maintained by @ankitfromindia
+
+---
+
+Let me know if you also want to publish this to Packagist, or need a `composer.json`, `config/databricks.php`, or test setup scaffolding.

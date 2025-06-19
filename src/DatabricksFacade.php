@@ -1,13 +1,10 @@
 <?php
 
-namespace Ankitfromindia\StarbustQuery;
+namespace Ankitfromindia\DatabricksConnect;
 
 use Illuminate\Support\Facades\Facade;
 
-/**
- * @see \Ankitfromindia\StarbustQuery\Skeleton\SkeletonClass
- */
-class StarbustQueryFacade extends Facade
+class DatabricksFacade extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -16,6 +13,6 @@ class StarbustQueryFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'starbust-query';
+        return 'databricks';
     }
 }

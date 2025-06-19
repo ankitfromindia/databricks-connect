@@ -1,18 +1,17 @@
 <?php
 
-namespace Ankitfromindia\StarbustQuery;
+namespace Ankitfromindia\DatabricksConnect;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class StarbustQuery
+class Databricks
 {
     private $connection;
     private $select;
     private static $instance;
     private $query;
     private $limit = 10;
-    private $offset = 0;
 
     private function __construct() {}
 
@@ -21,7 +20,7 @@ class StarbustQuery
         if (empty(self::$instance)) {
             $instance = new self();
             $instance->setConnection(
-                empty($connection) ? config('starbust.default') : $connection
+                empty($connection) ? config('databricks.default') : $connection
 
             );
             self::$instance = $instance;
@@ -30,21 +29,21 @@ class StarbustQuery
     }
     private function setConnection($connection)
     {
-
-        $host = config('starbust.connections.' . $connection . '.host');
-        $port = config('starbust.connections.' . $connection . '.port', 443);
-        $user = config('starbust.connections.' . $connection . '.user');
-        $password = config('starbust.connections.' . $connection . '.password');
-        $catalog = config('starbust.connections.' . $connection . '.catalog');
-        $schema = config('starbust.connections.' . $connection . '.schema');
-        $driver = config('starbust.connections.' . $connection . '.driver');
-
-        $connectionString = "Driver=$driver;Host=$host;Port=$port;UID=$user;PWD=$password;Catalog=$catalog;Schema=$schema;AuthenticationType=LDAP Authentication;CHARSET=UFT-8";
-
         try {
-            $this->connection =  odbc_connect($connectionString, config('services.aws.key'), config('services.aws.secret'));
-        } catch (\SQLException $e) {
-            echo "Connection Error";
+            $connStr = "Driver=" . config('databricks.connections.' . $connection . '.driver') . ";"
+                . "Host=" . config('databricks.connections.' . $connection . '.host') . ";"
+                . "Port=443;"
+                . "HTTPPath=" . config('databricks.connections.' . $connection . '.path') . ";"
+                . "SSL=1;"
+                . "AuthMech=3;"
+                . "UID=token;"
+                . "PWD=" . config('databricks.connections.' . $connection . '.token') . ";"
+                . "ThriftTransport=2;"
+                . "SparkServerType=3;"
+                . "CHARSET=" . config('databricks.connections.' . $connection . '.charset') . ";";
+            return odbc_connect($connStr, config('databricks.connections.' . $connection . '.aws_key'), config('databricks.connections.' . $connection . '.aws_secret'));
+        } catch (\Exception $e) {
+            echo "Connection Error: " . $e->getMessage();
         }
     }
 
