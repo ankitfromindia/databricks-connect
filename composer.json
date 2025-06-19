@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Ankitfromindia\\Databricks\\": "src"
+            "Ankitfromindia\\DatabricksConnect\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Ankitfromindia\\Databricks\\Tests\\": "tests"
+            "Ankitfromindia\\DatabricksConnect\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -42,10 +42,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Ankitfromindia\\Databricks\\DatabricksServiceProvider"
+                "Ankitfromindia\\DatabricksConnect\\DatabricksServiceProvider"
             ],
             "aliases": {
-                "Databricks": "Ankitfromindia\\Databricks\\DatabricksFacade"
+                "Databricks": "Ankitfromindia\\DatabricksConnect\\DatabricksFacade"
             }
         }
     }
