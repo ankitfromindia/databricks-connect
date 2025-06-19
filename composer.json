@@ -1,6 +1,6 @@
 {
     "name": "ankitfromindia/databricks",
-    "description": "Create ODBC Connection to Starbust and run query",
+    "description": "Databricks Connect for Laravel",
     "keywords": [
         "ankitfromindia",
         "databricks"
